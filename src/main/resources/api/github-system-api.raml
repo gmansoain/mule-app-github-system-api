@@ -1,0 +1,145 @@
+#%RAML 1.0
+title: Github System API
+mediaType: 
+- application/json
+
+uses:
+  common: /exchange_modules/fc9e3283-a489-4e88-99aa-cceea4aa5ea1/gon-common-api-fragments/1.0.4/gon-common-api-fragments.raml
+
+types:
+  Repository: !include datatypes/Repository.raml
+  RepoTemplate: !include datatypes/RepoTemplate.raml
+
+/repos:  
+  get:
+    is: [common.client-id-required, common.error-responses]
+    description: Retrieves List of all repos
+    displayName: List Repos
+    responses:
+      200:
+        body:
+          type: Repository[]
+    
+  post:
+    is: [common.client-id-required, common.error-responses]
+    description: Creates a New Repo
+    displayName: Create Repo
+    body:
+      type: Repository
+    responses:
+      201:
+        body:
+          type: object
+          properties:
+            responseCode: integer
+            responseMessage: string
+            repo_id: integer
+          example:
+            responseCode: 201
+            responseMessage: "SUCCESS - Repo created"
+            repo_id: 204972816
+
+/repos/{repo}:
+  delete:
+    description: Deletes a Repos
+    displayName: Delete Repo
+    responses:
+      204: 
+        body:
+          type: object
+          properties:
+            responseCode: integer
+            responseMessage: string
+          example:
+            responseCode: 204
+            responseMessage: "SUCCESS - Repo deleted"
+      
+/repos/templates/{template}:
+  post:
+    is: [common.client-id-required, common.error-responses]
+    description: Creates a Repo from a Template
+    displayName: Create Repo from Template
+    body:
+      type: RepoTemplate
+    responses:
+      201:
+        body:
+          type: object
+          properties:
+            responseCode: integer
+            responseMessage: string
+            repo_id: integer
+          example:
+            responseCode: 201
+            responseMessage: "SUCCESS - Repo created"
+            repo_id: 204972816
+
+    
+/repos/{repo}/variables:
+  post:
+    is: [common.client-id-required, common.error-responses]
+    description: Create a repository variable
+    displayName: Create Variable
+    body:
+      type: object
+      properties:
+        name: string
+        value: string
+    responses:
+      201:
+        body:
+          type: object
+          properties:
+            responseCode: integer
+            responseMessage: string
+          example:
+            responseCode: 201
+            responseMessage: "SUCCESS - Variable created"
+
+    
+/repos/{repo}/environments:
+  post:
+    is: [common.client-id-required, common.error-responses]
+    description: Create Environment for a Repo
+    displayName: Create Environment
+    body:
+      type: object
+      properties:
+        name: string
+      example:
+        name: "Production"
+    responses:
+      201:
+        body:
+          type: object
+          properties:
+            responseCode: integer
+            responseMessage: string
+          example:
+            responseCode: 201
+            responseMessage: "SUCCESS - Environment created"
+    
+    
+
+/repos/{repo_id}/environments/{environment}/variables:
+  post:
+    is: [common.client-id-required, common.error-responses]
+    description: Create variable in a Repository Environment
+    displayName: Create Environment Variable
+    body:
+      type: object
+      properties:
+        name: string
+        value: string
+    responses:
+      201:
+        body:
+          type: object
+          properties:
+            responseCode: integer
+            responseMessage: string
+          example:
+            responseCode: 201
+            responseMessage: "SUCCESS - Variable created"
+
+    
