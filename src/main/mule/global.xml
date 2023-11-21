@@ -5,8 +5,8 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
-	<http:listener-config name="HTTP_Listener_LOCAL" doc:name="HTTP Listener config" doc:id="7abfea1b-3804-475a-b821-bbf1d3a138d8" >
-		<http:listener-connection host="0.0.0.0" port="8085" />
+	<http:listener-config name="HTTP_Listener_Github_System_API" doc:name="HTTP Listener config" doc:id="7abfea1b-3804-475a-b821-bbf1d3a138d8" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 	<http:request-config name="HTTP_Request_Github_API" doc:name="HTTP Request configuration" doc:id="2d24eb70-dbb5-4d74-be62-ab5058b95348" >
 		<http:request-connection protocol="HTTPS" host="${github.host}" />
