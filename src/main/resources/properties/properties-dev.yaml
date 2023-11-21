@@ -1,4 +1,6 @@
 github:
   host: "api.github.com"
-  token: "Bearer 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"
+  token: "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"
   username: "gmansoain"
+
+

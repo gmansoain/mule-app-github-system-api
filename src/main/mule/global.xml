@@ -14,4 +14,7 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 	<configuration-properties doc:name="Configuration properties" doc:id="ae1ec8e1-988b-4100-96bd-31b204a96ebb" file="properties/properties-${env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="19668f1b-6a27-4d53-becd-2590353fc9b6" name="env" value="${env}" />
 	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="3043a192-9006-4e29-b513-4da563fc7c5c" flowRef="github-system-api-main" />
+	<http:listener-config name="HTTP_Listener_TESTS" doc:name="HTTP Listener config" doc:id="205b2779-6881-4df4-8062-741e615b447e" >
+		<http:listener-connection host="0.0.0.0" port="8085" />
+	</http:listener-config>
 </mule>
