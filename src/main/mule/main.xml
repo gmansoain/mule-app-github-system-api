@@ -20,6 +20,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Logger" doc:id="8a517657-8450-4d13-8622-5d4f100f6afb" message="#[payload]"/>
 	</flow>
 	<flow name="createRepo" doc:id="812d7bae-3e35-41d0-b48b-da9a4f3df2a2" >
+		<http:listener doc:name="Listener" doc:id="8a62013a-a25f-40d8-b141-333b14481b85" config-ref="HTTP_Listener_TESTS" path="/repos" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="Logger" doc:id="76374cce-934c-4dc1-aa59-f00679a7d8f4" message='#["Received Create Repo Request"]'/>
 		<ee:transform doc:name="Transform Message" doc:id="19e51693-87d2-408b-be31-c4e501665268" >
 			<ee:message >
@@ -176,6 +177,7 @@ output application/json
 		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "responseCode": 201,&#10;  "responseMessage": "SUCCESS - Variable created"&#10;}]' doc:name="Set Payload" doc:id="68b07b90-018c-4d93-b94e-b4a5a817df56" />
 	</flow>
 	<flow name="deleteRepo" doc:id="c5aec223-66f5-4bc7-94ab-f1cc4add3c62" >
+		<http:listener doc:name="Listener" doc:id="761e9168-83b3-4c00-869a-04dabc903706" config-ref="HTTP_Listener_TESTS" path="/repos/{repo}" allowedMethods="DELETE"/>
 		<logger level="INFO" doc:name="Logger" doc:id="feccf47b-7665-460e-a61b-efe8f400dce9" message='#["Received DELETE REPO Request"]'/>
 		<http:request method="DELETE" doc:name="Request" doc:id="f7adb814-362f-4346-b5a7-98a9ea93f77d" config-ref="HTTP_Request_Github_API" path="/repos/${github.username}/{repo}">
 			<http:headers ><![CDATA[#[output application/java
