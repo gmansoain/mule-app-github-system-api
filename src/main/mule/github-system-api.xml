@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <http:listener-config name="github-system-api-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
-    </http:listener-config>
     <apikit:config name="github-system-api-config" api="github-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="github-system-api-main">
-        <http:listener config-ref="github-system-api-httpListenerConfig" path="/api/*">
+        <http:listener config-ref="HTTP_Listener_LOCAL" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -97,7 +94,7 @@ output application/json
         </error-handler>
     </flow>
     <flow name="github-system-api-console">
-        <http:listener config-ref="github-system-api-httpListenerConfig" path="/console/*">
+        <http:listener config-ref="HTTP_Listener_LOCAL" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -123,180 +120,25 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
+    <flow name="delete:\repos\(repo):github-system-api-config">
+		<flow-ref doc:name="deleteRepo" doc:id="8bf29ee1-c8ac-4821-8cc8-94376fa87d76" name="deleteRepo"/>
+    </flow>
     <flow name="get:\repos:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  errorCode: "400",
-  errorMessage: "Invalid request message",
-  transactionId: "dd960082-abbf-47c2-8c65-f18eeb35848b",
-  timeStamp: "2019-09-30T15:27:49.274Z"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="getAllRepos" doc:id="cb420b99-f766-4207-815e-23cc98629573" name="getAllRepos"/>
     </flow>
     <flow name="post:\repos\templates\(template):application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="template">attributes.uriParams.'template'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Repo created",
-  repo_id: 204972816
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="post:\repos\(repo_id)\environments\(environment_id)\variables:application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="repo_id">attributes.uriParams.'repo_id'</ee:set-variable>
-                <ee:set-variable variableName="environment_id">attributes.uriParams.'environment_id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Variable created"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="post:\repos\(repo_id)\environments:application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="repo_id">attributes.uriParams.'repo_id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Environment created"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="post:\repos\(repo_id)\variables:application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="repo_id">attributes.uriParams.'repo_id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Variable created"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="post:\repos:application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Repo created",
-  repo_id: 204972816
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="delete:\repos\(repo):github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="repo">attributes.uriParams.'repo'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 204,
-  responseMessage: "SUCCESS - Repo deleted"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="createRepoFromTemplate" doc:id="7c5081e2-0cea-4574-bdc5-0250d852d32a" name="createRepoFromTemplate"/>
     </flow>
     <flow name="post:\repos\(repo_id)\environments\(environment)\variables:application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="repo_id">attributes.uriParams.'repo_id'</ee:set-variable>
-                <ee:set-variable variableName="environment">attributes.uriParams.'environment'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Variable created"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="createEnvironmentVariable" doc:id="c43de0d2-bc48-4fe2-9a14-36ff58a20b85" name="createEnvironmentVariable"/>
     </flow>
     <flow name="post:\repos\(repo)\environments:application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="repo">attributes.uriParams.'repo'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Environment created"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="createEnvironment" doc:id="30e77977-2646-4f5c-9f9d-e76dc172083b" name="createEnvironment"/>
     </flow>
     <flow name="post:\repos\(repo)\variables:application\json:github-system-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="repo">attributes.uriParams.'repo'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  responseCode: 201,
-  responseMessage: "SUCCESS - Variable created"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="createRepoVariable" doc:id="7f92335c-5a98-4157-9194-ef19222f3567" name="createRepoVariable"/>
+    </flow>
+    <flow name="post:\repos:application\json:github-system-api-config">
+		<flow-ref doc:name="createRepo" doc:id="784707e9-a3b4-48a7-bb35-11ac3670fde8" name="createRepo"/>
     </flow>
 </mule>

@@ -6,9 +6,6 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="getAllRepos" doc:id="0004ed78-e33d-4799-9674-5814ed7a50da" >
-		<http:listener doc:name="Listener" doc:id="15d9375a-5bd7-414e-a2ac-1e71174c1428" config-ref="HTTP_Listener_LOCAL" path="/repos" allowedMethods="GET">
-			<http:response statusCode="#[vars.httpStatus]" />
-		</http:listener>
 		<logger level="INFO" doc:name="Logger" doc:id="08278866-fb45-4298-8c84-c50c13e0d925" message='#["Received Get all repos request"]'/>
 		<http:request method="GET" doc:name="Request" doc:id="6f0e889d-9163-4f3d-a83e-f5d3a6764911" config-ref="HTTP_Request_Github_API" path="/users/${github.username}/repos">
 			<http:headers ><![CDATA[#[output application/java
@@ -22,7 +19,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Logger" doc:id="8a517657-8450-4d13-8622-5d4f100f6afb" message="#[payload]"/>
 	</flow>
 	<flow name="createRepo" doc:id="812d7bae-3e35-41d0-b48b-da9a4f3df2a2" >
-		<http:listener doc:name="Listener" doc:id="abd15120-e1ca-41ff-aa38-36aa04a18193" config-ref="HTTP_Listener_LOCAL" path="/repos" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="Logger" doc:id="76374cce-934c-4dc1-aa59-f00679a7d8f4" message='#["Received Create Repo Request"]'/>
 		<ee:transform doc:name="Transform Message" doc:id="19e51693-87d2-408b-be31-c4e501665268" >
 			<ee:message >
@@ -63,7 +59,6 @@ output application/json
 		<set-variable value="201" doc:name="Set httpStatus to 201" doc:id="fb2745fc-6fd4-4800-bdb6-57a01aac7ed6" variableName="httpStatus"/>
 	</flow>
 	<flow name="createRepoFromTemplate" doc:id="53b1fc4b-ae46-486b-b7f0-a9fe7f48847c" >
-		<http:listener doc:name="Listener" doc:id="4452880f-c142-4c6f-88d4-359c1cbf25d7" config-ref="HTTP_Listener_LOCAL" path="/repos/templates/{template}"/>
 		<logger level="INFO" doc:name="Logger" doc:id="989ac127-e4de-484a-ab09-14b7e1452e17" message='#["Received Create Repo from Template"]'/>
 		<set-variable value="#[attributes.uriParams.template]" doc:name="template" doc:id="992a8083-9ad6-4865-9a05-9839db5e3f56" variableName="template"/>
 		<ee:transform doc:name="Transform Message" doc:id="5a9a656a-fa31-46c5-afb2-981c1a7967c2" >
@@ -109,7 +104,6 @@ output application/json
 		<set-variable value="201" doc:name="Set httpStatus to 201" doc:id="d380435e-385e-4871-9f63-d96cac6b385b" variableName="httpStatus"/>
 	</flow>
 	<flow name="createEnvironment" doc:id="cb8f1bc5-e4ce-40b4-8919-20c864c5aa50" >
-		<http:listener doc:name="Listener" doc:id="af1e4b1f-032e-42b4-9f8a-561a9c30f7f5" config-ref="HTTP_Listener_LOCAL" path="/repos/{repo}/environments" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="Logger" doc:id="a2ebba40-b0fa-4afc-aae0-97363621d7ca" message='#["Received Create Environment Request"]'/>
 		<set-variable value="#[payload.name]" doc:name="environment" doc:id="afb19a77-de3e-4f68-bb67-f3a895febad9" variableName="environment"/>
 		<set-variable value="#[attributes.uriParams.repo]" doc:name="repo" doc:id="1ea6bbb8-22ca-4451-b849-6cdb2925ed22" variableName="repo"/>
@@ -161,7 +155,6 @@ output application/json
 		</ee:transform>
 	</flow>
 	<flow name="createRepoVariable" doc:id="f19075f4-7b88-4c94-aca9-18865dfee35a" >
-		<http:listener doc:name="Listener" doc:id="80d07a66-ad91-4ece-a6c3-654e9dbbba89" config-ref="HTTP_Listener_LOCAL" path="/repos/{repo}/variables" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="Logger" doc:id="7e9a7afd-4b23-4139-9b73-cb0fb750f228" message='#["Received Create Repo Variable Request"]'/>
 		<set-variable value="#[attributes.uriParams.repo]" doc:name="repo" doc:id="1ce3c722-5b6a-4801-9754-d98c464eead6" variableName="repo"/>
 		<http:request method="POST" doc:name="GITHUB API - Create Repo Variable" doc:id="1fb2f7eb-f7d3-4512-a1f8-7d8b1789936e" config-ref="HTTP_Request_Github_API" path="/repos/${github.username}/{repo}/actions/variables">
@@ -181,11 +174,7 @@ output application/json
 		<set-variable value="201" doc:name="Set httpStatus to 201" doc:id="875de1ca-2ad5-4516-b986-c9460bf43eea" variableName="httpStatus"/>
 		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "responseCode": 201,&#10;  "responseMessage": "SUCCESS - Variable created"&#10;}]' doc:name="Set Payload" doc:id="68b07b90-018c-4d93-b94e-b4a5a817df56" />
 	</flow>
-	<flow name="mainFlow" doc:id="c5aec223-66f5-4bc7-94ab-f1cc4add3c62" >
-		<http:listener doc:name="Listener" doc:id="ca2618ba-dcb5-4da0-9e0e-3cd76772d640" config-ref="HTTP_Listener_LOCAL" path="/repos/{repo}" allowedMethods="DELETE">
-			<http:response statusCode="#[vars.httpStatus]" />
-			<http:error-response statusCode="#[vars.httpStatus]" />
-		</http:listener>
+	<flow name="deleteRepo" doc:id="c5aec223-66f5-4bc7-94ab-f1cc4add3c62" >
 		<logger level="INFO" doc:name="Logger" doc:id="feccf47b-7665-460e-a61b-efe8f400dce9" message='#["Received DELETE REPO Request"]'/>
 		<http:request method="DELETE" doc:name="Request" doc:id="f7adb814-362f-4346-b5a7-98a9ea93f77d" config-ref="HTTP_Request_Github_API" path="/repos/${github.username}/{repo}">
 			<http:headers ><![CDATA[#[output application/java
@@ -216,7 +205,6 @@ output application/json
 		<logger level="INFO" doc:name="Logger" doc:id="1884cb33-2b4b-4c74-a4fa-c327533e358f" message="#[payload]"/>
 	</flow>
 	<flow name="createEnvironmentVariable" doc:id="9ce0b20d-e9f7-48af-8b7d-da67e8a9612b" >
-		<http:listener doc:name="Listener" doc:id="28858483-3c23-49ef-821f-ba1fdd3e7eb7" config-ref="HTTP_Listener_LOCAL" path="/repos/{repo_id}/environments/{environment}/variables" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="Logger" doc:id="e6b51f07-c6af-4135-a14a-05a0fa7524e8" />
 		<set-variable value="#[attributes.uriParams.repo_id]" doc:name="repo_id" doc:id="e33ad6f1-e925-4663-bd14-0ba9a27bc2ea" variableName="repo_id"/>
 		<set-variable value="#[attributes.uriParams.environment]" doc:name="environment" doc:id="34edc6a5-2e7f-47f3-b7ff-dbf98e83d386" variableName="environment"/>

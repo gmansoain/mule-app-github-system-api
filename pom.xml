@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mycompany</groupId>
+	<groupId>${env.MULE_ORG_ID}</groupId>
 	<artifactId>github-system-api</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
 	<name>github-system-api</name>
@@ -29,6 +29,40 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+				<configuration>
+                    <cloudhub2Deployment>
+                        <uri>https://anypoint.mulesoft.com </uri>
+                        <provider>MC</provider>
+                        <businessGroupId>${env.MULE_ORG_ID}</businessGroupId>
+                        <environment>${env.environment}</environment>
+                        <target>${env.target}</target>
+                        <muleVersion>4.4.0</muleVersion>
+                        <connectedAppClientId>${env.MULE_CLIENT_ID}</connectedAppClientId>
+                        <connectedAppClientSecret>${env.MULE_CLIENT_SECRET}</connectedAppClientSecret>
+                        <connectedAppGrantType>client_credentials</connectedAppGrantType>
+                        <applicationName>${project.name}</applicationName>
+                        <replicas>${env.replicas}</replicas>
+                        <vCores>${env.cores}</vCores>
+                        <properties>
+                            <anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
+                            <anypoint.platform.visualizer.displayName>${project.name}</anypoint.platform.visualizer.displayName>
+                            <anypoint.platform.visualizer.layer>${env.api_layer}</anypoint.platform.visualizer.layer>
+                            <env>${env.app_env}</env>
+                        </properties>
+                        <deploymentSettings>
+                            <lastMileSecurity>false</lastMileSecurity>
+                            <forwardSslSession>false</forwardSslSession>
+                            <generateDefaultPublicUrl>true</generateDefaultPublicUrl>
+                        </deploymentSettings>
+                        <secureProperties>
+                            <api.id>${env.api_id}</api.id>
+                            <secure.key>${env.SECURE_KEY}</secure.key>
+                            <anypoint.platform.client_id>${env.client_id}</anypoint.platform.client_id>
+                            <anypoint.platform.client_secret>${env.client_secret}</anypoint.platform.client_secret>
+                        </secureProperties>
+                    </cloudhub2Deployment>
+                    <classifier>mule-application</classifier>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>
